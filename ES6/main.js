@@ -3,8 +3,28 @@
 (function() {
   const canvas = document.getElementById('main');
   const context = canvas.getContext('2d');
-  document.onkeydown = keyEvent;
-  document.onclick = clickEvent;
+  onkeydown = keyEvent;
+  document.getElementById('main').onclick = clickEvent;
+
+  const entityTypeDropdown = document.getElementById('entity_type');
+  const bouncinessInput = document.getElementById('bounciness');
+  const dropButton = document.getElementById('drop');
+
+  dropButton.addEventListener('click', function() {
+    switch(entityTypeDropdown.value.toLowerCase()) {
+      case 'square':
+        let sqEnt = new SquareEntity ({
+            x: Math.floor(Math.random()*canvas.width), 
+            y: Math.floor(Math.random()*canvas.height), 
+            xvector: Math.floor(Math.random()*8) - Math.floor(Math.random()*32),
+            yvector: Math.floor(Math.random()*8),
+            bounciness: parseFloat(bouncinessInput.value || 0.2),
+            fillStyle: randomHexColor()
+        });
+        worldEntities.push(sqEnt);
+        defaultTarget = sqEnt;
+      }
+  });
 
   function clickEvent(e) {
     e = e || window.event;
@@ -27,6 +47,10 @@
     };
   }
 
+  function selectEntity(selected) {
+
+  }
+
   function togglePause() {
     gameState.running = !gameState.running;
   }
@@ -42,7 +66,7 @@
   
   class SquareEntity {
     constructor({x = 10, y = 10, width = 30, height = 30, fillStyle = '#000000', speedx = 80, speedy = 90, 
-      xvector = 0, yvector = 0, friction = 0.8, gravity = 98, bounciness = 0.9}) {
+      xvector = 0, yvector = 0, friction = 0.8, gravity = 98, bounciness = 0.2}) {
       this.x = x;
       this.y = y;
       this.width = width;
@@ -80,10 +104,6 @@
       }
     }
 
-    doesIntersect(entity) {
-
-    }
-
     move(direction) {
       console.log('move dir', direction);
       switch(direction) {
@@ -99,6 +119,9 @@
         case 'right':
           this.xvector += this.speedx;
       }
+    }
+
+    doesIntersect(entity) {
 
     }
   }
