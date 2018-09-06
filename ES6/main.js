@@ -157,10 +157,10 @@
             // } else if (Math.abs(r - c) < 0.01 && (Math.abs(s-d) <= this.height || Math.abs(q-b) <= this.height)) {
             //   return side;
             // }
-            if (c >= p && c <= r && b >= q) { // right side touches left
+            if (c >= p && c <= r && (b >= q && b <= q+entity.height)) { // right side touches left
               return 'right';
             } 
-            else if (a <= r && p <= c && b >= q) {
+            else if (a <= r && a >= p && (b >= q && b <= q+entity.height)) {
               return 'left';
             }
             else if (d + entity.height >= q + 5 && ((c >= p && c <= r) || (a <= r && p <= c))) {
@@ -233,16 +233,18 @@
         }
 
         if(side === 'right' || side === 'left') {
-          // entity.x = 'right' ? entity.x-target.width + 0.01 : target.x - 0.01;
-          entity[`${side_axis_dir[side][0]}vector`] += 
+          target.x = (side === 'right') ? entity.x-target.width- 0.01 : entity.x+entity.width+0.02;
+          if(side === 'right') entity[`${side_axis_dir[side][0]}vector`] += 
             (side_axis_dir[side][1])*(target[`${side_axis_dir[side][0]}vector`]);
+          else target[`${side_axis_dir[side][0]}vector`] -= 
+          (side_axis_dir[side][1])*(entity[`${side_axis_dir[side][0]}vector`]);
         }
       
         if(side === 'top') {
           // target[`${side_axis_dir[side][0]}vector`] += 
           // (side_axis_dir[side][1])*(entity[`${side_axis_dir[side][0]}vector`]);
           
-          target[`${side_axis_dir[side][0]}vector`] = -(target.yvector*target.bounciness);
+          target[`${side_axis_dir[side][0]}vector`] = -(entity.yvector*entity.bounciness);
           target[side_axis_dir[side][0]] = entity.y-target.height-0.2; //put the entity right next to 0, otherwise it's colliding
         } 
         // entity.xvector -= (target.xvector*target.bounciness*entity.bounciness);
